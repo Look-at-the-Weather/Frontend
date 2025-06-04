@@ -7,7 +7,6 @@ import HrLine from '@components/common/atom/HrLine';
 import VeLine from '@components/common/atom/VeLine';
 import { ResetIcon } from '@components/icons/ResetIcon';
 import PostFilterModal from '@/components/post/organism/PostFilterModal';
-import { PostList } from '@/components/post/organism/PostList';
 import { usePostStore } from '@/store/postStore';
 import { PostMeta } from '@/config/types';
 import FooterNavi from '@/components/common/organism/FooterNavi';
@@ -18,6 +17,7 @@ import OptionBtn from '@/components/common/atom/OptionBtn';
 import ScrollFadeOverlay from '@components/common/atom/ScrollFadeOverlay';
 import AllPostEmpty from '@/components/placeholder/AllPostEmpty';
 import FilteredPostEmpty from '@/components/placeholder/FilteredPostEmpty';
+import { PostList } from '@/components/post/organism/PostList';
 
 export default function Post() {
   const { location } = useLocationData();
@@ -267,9 +267,11 @@ export default function Post() {
         ) : isFilteredPostEmpty ? (
           <FilteredPostEmpty />
         ) : (
-          <PostList postList={postList} />
+          <div className="flex-grow pb-0.5">
+            <PostList postList={postList} />
+            <div ref={pageEnd}></div>
+          </div>
         )}
-        <div ref={pageEnd}></div>
       </div>
       <FooterNavi />
       {isOpen ? <PostFilterModal isOpen={setIsOpen} btnIndex={btnIndex} btnValue={btnValue} /> : null}
