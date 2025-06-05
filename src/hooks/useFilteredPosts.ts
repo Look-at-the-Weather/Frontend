@@ -12,27 +12,27 @@ interface GetFilteredPostsParams {
 export function useFilteredPosts() {
   const { locationTags, seasonTags, weatherTags, temperatureTags } = usePostFilterStore();
 
+  const locationIds = locationTags.map((loc) => ({
+    city: loc.cityId,
+    district: loc.districtId,
+  }));
+  const seasonIds = seasonTags.map((tag) => tag.id);
+  const temperatureIds = temperatureTags.map((tag) => tag.id);
+  const weatherIds = weatherTags.map((tag) => tag.id);
+
   const getFilteredPosts = useCallback(
     async ({ pageNum, sortOrder }: GetFilteredPostsParams) => {
-      const location = locationTags.map((loc) => ({
-        city: loc.cityId,
-        district: loc.districtId,
-      }));
-      const seasonIds = seasonTags.map((tag) => tag.id);
-      const temperatureIds = temperatureTags.map((tag) => tag.id);
-      const weatherIds = weatherTags.map((tag) => tag.id);
-
       const data = await postFilteredPosts({
         page: pageNum,
         sort: sortOrder,
-        location,
+        location: locationIds,
         seasonTagIds: seasonIds,
         weatherTagIds: weatherIds,
         temperatureTagIds: temperatureIds,
         gender: 'ALL',
       });
 
-      return data.posts;
+      return data;
     },
     [locationTags, seasonTags, weatherTags, temperatureTags],
   );

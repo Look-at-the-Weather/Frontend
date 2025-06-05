@@ -18,7 +18,7 @@ export default function FilterCategoryTabs({ onClick }: { onClick: () => void })
   return (
     <div className="flex gap-2 overflow-x-auto scrollbar-hide relative">
       {filterCategoryList.map(({ defaultLabel, category, tags }) => (
-        <OptionBtn isActive={!!tags.length} onClickFunc={onClick}>
+        <OptionBtn key={category} isActive={!!tags.length} onClickFunc={onClick}>
           {tags.length > 1
             ? `${getLabel(tags[0], category)} 외 ${tags.length - 1}`
             : tags.length === 1

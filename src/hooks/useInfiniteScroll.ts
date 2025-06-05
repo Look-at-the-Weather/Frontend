@@ -9,8 +9,8 @@ type UseInfiniteScrollResult = UseInfiniteQueryResult<InfiniteData<any, unknown>
 
 function useInfiniteScroll(
   queryKey: string[],
-  queryFn: ({ page, size }: { page: number; size: number }) => any,
-  size: number,
+  queryFn: ({ page, size, sortOrder }: { page: number; size?: number; sortOrder?: 'LATEST' | 'RECOMMENDED' }) => any,
+  size?: number,
 ): UseInfiniteScrollResult {
   const pageEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -27,8 +27,9 @@ function useInfiniteScroll(
 
   const { hasNextPage, fetchNextPage, isFetchingNextPage, data } = queryResult;
 
-  const detailQueryKey = queryKey[queryKey.length - 1];
-  const postList = data?.pages.flatMap((page) => page[detailQueryKey]) ?? []; // 모든 페이지의 게시물 병합
+  const detailQueryKey = queryKey[2];
+  const postList =
+    data?.pages.flatMap((page) => page[detailQueryKey === 'filteredPosts' ? 'posts' : detailQueryKey]) ?? []; // 모든 페이지의 게시물 병합
 
   useEffect(() => {
     if (isFetchingNextPage || !hasNextPage) return;

@@ -6,7 +6,15 @@ import PostListStatusHandler from '@/components/post/organism/PostListStatusHand
 
 interface VirtualInfiniteScrollProps {
   queryKey: string[];
-  queryFn: ({ page, size }: { page: number; size: number }) => Promise<any>;
+  queryFn: ({
+    page,
+    size,
+    sortOrder,
+  }: {
+    page: number;
+    size?: number;
+    sortOrder?: 'LATEST' | 'RECOMMENDED';
+  }) => Promise<any>;
   size?: number;
   headerText: string;
   placeholderComp: React.FC;
