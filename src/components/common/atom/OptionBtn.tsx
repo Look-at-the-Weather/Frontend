@@ -3,13 +3,13 @@ import CloseBtn from '@components/icons/CloseBtn';
 
 interface OptionBtnProps {
   id?: string;
-  name: string;
+  children: string;
   isActive: boolean;
   showCloseBtn?: boolean;
   onClickFunc: () => void;
 }
 
-export default function OptionBtn({ id, name, isActive, showCloseBtn, onClickFunc }: OptionBtnProps) {
+export default function OptionBtn({ id, children, isActive, showCloseBtn, onClickFunc }: OptionBtnProps) {
   return (
     <div
       id={id}
@@ -19,7 +19,7 @@ export default function OptionBtn({ id, name, isActive, showCloseBtn, onClickFun
       onClick={showCloseBtn ? () => {} : onClickFunc}
     >
       <Text color={isActive ? 'main' : 'gray'} weight={isActive ? 'medium' : 'regular'}>
-        {name}
+        {children}
       </Text>
       {showCloseBtn ? <CloseBtn width={16} onClick={onClickFunc} fill="rgb(var(--color-primary))" /> : null}
     </div>

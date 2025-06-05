@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { usePostStore } from '@/store/postStore';
+import { usePostStore } from '@/store/postFilterStore';
 import { POSTFILTERTAPLIST, SEASON_TAGS, TEMPERATURE_TAGS, WEATHER_TAGS } from '@/config/constants';
 import { FilterItem, SectionKey, PostFilterModalProps, CityType, DistrictType, FilterItemId } from '@/config/types';
 import Text from '../../common/atom/Text';

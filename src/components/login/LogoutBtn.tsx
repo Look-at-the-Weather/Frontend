@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { showToast } from '../provider/ToastProvider';
 import Text from '../common/atom/Text';
-import { usePostStore } from '@/store/postStore';
+import { usePostFilterStore } from '@/store/postFilterStore';
 import { useRouter } from 'next/navigation';
 import LogoutModal from '../modal/LogoutModal';
 import { AxiosError } from 'axios';
@@ -15,7 +15,7 @@ export default function LogoutBtn() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const isLogin = useAuthStore((state) => state.isLogin);
   const { setIsLogin, authStoreClear } = useAuthStore();
-  const { postStoreClear } = usePostStore();
+  const { postStoreClear } = usePostFilterStore();
   const router = useRouter();
   const queryClient = useQueryClient();
 

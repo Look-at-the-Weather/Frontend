@@ -11,7 +11,9 @@ export interface WeatherInfo {
 
 export interface Location {
   city: string;
+  cityId: number;
   district: string;
+  districtId: number;
 }
 
 export interface PostMeta {

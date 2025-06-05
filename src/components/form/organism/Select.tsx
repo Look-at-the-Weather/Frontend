@@ -15,12 +15,13 @@ export default function Select({ name, options, maxSelection = 1, rules }: Selec
             return (
               <OptionBtn
                 key={id}
-                name={name}
                 isActive={isSelected(value, id)}
                 onClickFunc={() => {
                   handleOptionClick(value, id, maxSelection, onChange);
                 }}
-              />
+              >
+                {name}
+              </OptionBtn>
             );
           })}
         </div>
