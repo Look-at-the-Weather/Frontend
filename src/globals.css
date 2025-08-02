@@ -109,3 +109,7 @@
 .custom-pagination .swiper-pagination-bullet-active {
   background: #ffffff;
 }
+
+.Toastify__toast-container {
+  bottom: 3rem !important;
+}
