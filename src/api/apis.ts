@@ -153,14 +153,6 @@ export const postFilteredPosts = async (request: RequestBody) => {
   return response.data;
 };
 
-export const allPosts = async (page: number, city: string, district: string, sort: string) => {
-  const response = await instance.get(
-    `/posts?page=${page}&size=10&city=${city}&district=${district}&sort=${sort}`,
-    getConfig(),
-  );
-  return response.data;
-};
-
 export const reissue = async () => {
   const response = await reissueInstance.post(`/auth/reissue`, null, getConfig({ withCredentials: true }));
   return response.data;

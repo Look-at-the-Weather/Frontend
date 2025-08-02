@@ -11,7 +11,7 @@ import { usePostStore } from '@/store/postStore';
 import { PostMeta } from '@/config/types';
 import FooterNavi from '@/components/common/organism/FooterNavi';
 import useLocationData from '@/hooks/useLocationData';
-import { postFilteredPosts, allPosts } from '@/api/apis';
+import { postFilteredPosts } from '@/api/apis';
 import LookWeatherWidget from '@/components/weather/organism/LookWeatherWidget';
 import OptionBtn from '@/components/common/atom/OptionBtn';
 import ScrollFadeOverlay from '@components/common/atom/ScrollFadeOverlay';
@@ -20,7 +20,7 @@ import FilteredPostEmpty from '@/components/placeholder/FilteredPostEmpty';
 import { PostList } from '@/components/post/organism/PostList';
 
 export default function Post() {
-  const { location } = useLocationData();
+  const { location: currentLocation } = useLocationData();
   const {
     locationIds,
     seasonTagIds,
@@ -31,6 +31,20 @@ export default function Post() {
     updateTemperatureTagIds,
     updateSeasonTagIds,
   } = usePostStore();
+
+  useEffect(() => {
+    if (currentLocation) {
+      console.log('위치 업데이트');
+      updateLocation([
+        {
+          cityName: currentLocation?.city,
+          cityId: currentLocation?.cityId,
+          districtName: currentLocation?.district,
+          districtId: currentLocation?.districtId,
+        },
+      ]);
+    }
+  }, [currentLocation]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [btnIndex, setBtnIndex] = useState(0);
@@ -56,36 +70,21 @@ export default function Post() {
     setPostList([]);
     setHasMore(true);
     setPage(0);
-    updateLocation([]);
+
+    if (currentLocation) {
+      updateLocation([
+        {
+          cityName: currentLocation?.city,
+          cityId: currentLocation?.cityId,
+          districtName: currentLocation?.district,
+          districtId: currentLocation?.districtId,
+        },
+      ]);
+    }
     updateWeatherTagIds([]);
     updateTemperatureTagIds([]);
     updateSeasonTagIds([]);
   };
-
-  const getAllPosts = useCallback(
-    async (pageNum: number) => {
-      if (!location || !location.city || !location.district) return;
-      if (!hasMore) return;
-      setLoading(true);
-
-      try {
-        const slicedCity = location.city.substring(0, 2);
-        const data = await allPosts(pageNum, slicedCity, location.district, sortOrder);
-        const updatePostList = data.posts.map((item: PostMeta) => ({ ...item, location }));
-
-        setPostList((prev) => [...prev, ...updatePostList]);
-        setPage(pageNum + 1);
-        setHasMore(updatePostList.length > 0);
-        setIsAllPostEmpty(updatePostList.length === 0 && pageNum === 0);
-      } catch {
-        setLoading(false);
-        setHasMore(false);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [sortOrder, location],
-  );
 
   const getFilteredPosts = useCallback(
     async (pageNum: number) => {
@@ -135,17 +134,13 @@ export default function Post() {
 
     if (location && isEmptyFilter !== null) {
       setPage(0);
-      if (isEmptyFilter) {
-        getAllPosts(0);
-      } else {
-        getFilteredPosts(0);
-      }
+      getFilteredPosts(0);
     }
-  }, [location, locationIds, seasonTagIds, weatherTagIds, temperatureTagIds, sortOrder]);
+  }, [currentLocation, locationIds, seasonTagIds, weatherTagIds, temperatureTagIds, sortOrder]);
 
   useEffect(() => {
     setHasMore(true);
-  }, [getAllPosts, getFilteredPosts]);
+  }, [getFilteredPosts]);
 
   useEffect(() => {
     const isScrollLoadable = Number.isInteger(postList.length / 10);
@@ -155,11 +150,7 @@ export default function Post() {
         (entries) => {
           if (isEmptyFilter !== null) {
             if (entries[0].isIntersecting && isScrollLoadable) {
-              if (isEmptyFilter) {
-                getAllPosts(page);
-              } else {
-                getFilteredPosts(page);
-              }
+              getFilteredPosts(page);
             }
           }
         },
@@ -185,7 +176,7 @@ export default function Post() {
         <div className="px-5">
           <LookWeatherWidget />
           <HrLine height={1} />
-          <div className="relative flex gap-4 items-center py-4">
+          <div className="relative flex items-center gap-4 py-4">
             <ResetIcon onClick={onClickResetBtn} className="flex-shrink-0 cursor-pointer" />
             <VeLine height={16} />
             <div className="flex gap-2 overflow-x-auto scrollbar-hide">
@@ -239,7 +230,7 @@ export default function Post() {
           </div>
           <HrLine height={8} />
           <div className="py-5">
-            <div className="flex row justify-end cursor-pointer">
+            <div className="flex justify-end cursor-pointer row">
               <div onClick={() => setSortOrder('LATEST')}>
                 <Text
                   color={sortOrder === 'LATEST' ? 'gray' : 'lightGray'}

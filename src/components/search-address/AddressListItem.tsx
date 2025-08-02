@@ -6,7 +6,9 @@ import { AddressItem } from '@/config/types';
 export default function AddressListItem({
   isPostForm,
   cityName,
+  cityId,
   districtName,
+  districtId,
   latitude,
   longitude,
   address_name,
@@ -19,7 +21,7 @@ export default function AddressListItem({
     <div
       onClick={() => {
         if (isPostForm) {
-          setPostFormLocation({ city: cityName, district: districtName });
+          setPostFormLocation({ city: cityName, cityId, district: districtName, districtId });
         } else {
           setCustomGeoPoint({ latitude, longitude });
         }

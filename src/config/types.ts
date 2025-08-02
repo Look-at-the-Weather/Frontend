@@ -11,7 +11,9 @@ export interface WeatherInfo {
 
 export interface Location {
   city: string;
+  cityId: number;
   district: string;
+  districtId: number;
 }
 
 export interface PostMeta {
@@ -195,7 +197,9 @@ export interface GuideContent {
 export interface AddressItem extends GeoPoint {
   address_name: string;
   cityName: string;
+  cityId: number;
   districtName: string;
+  districtId: number;
 }
 
 export interface PreloadImageProps {
