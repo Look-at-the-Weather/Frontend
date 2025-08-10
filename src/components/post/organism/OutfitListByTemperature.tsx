@@ -6,9 +6,10 @@ import { useQuery } from '@tanstack/react-query';
 import TempOutfitPostEmpty from '../../placeholder/TempOutfitPostEmpty';
 import HomePostListTitle from '../atom/HomePostListTitle';
 import PostListStatusHandler from './PostListStatusHandler';
+import FetchErrorPlaceholder from '@/components/placeholder/FetchErrorPlaceholder';
 
 export default function OutfitListByTemperature() {
-  const { weatherData } = useWeatherData();
+  const { weatherData, isError } = useWeatherData();
   const { currentTemp } = weatherData;
 
   const queryResults = useQuery({
@@ -22,12 +23,16 @@ export default function OutfitListByTemperature() {
   return (
     <div>
       <HomePostListTitle>현재 기온에 어울리는 룩</HomePostListTitle>
-      <PostListStatusHandler
-        postList={outfitPosts}
-        queryResults={queryResults}
-        isHorizontal
-        PlaceholderComp={TempOutfitPostEmpty}
-      />
+      {isError ? (
+        <FetchErrorPlaceholder />
+      ) : (
+        <PostListStatusHandler
+          postList={outfitPosts}
+          queryResults={queryResults}
+          isHorizontal
+          PlaceholderComp={TempOutfitPostEmpty}
+        />
+      )}
     </div>
   );
 }

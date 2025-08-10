@@ -19,13 +19,14 @@ export default function PostListStatusHandler({
 
   const ListComponent = isHorizontal ? HorizonScrollPostList : VirtualPostGrid;
 
+  console.log('isError: ', isError);
   return (
     <>
       {isSuccess &&
         (postList.length ? (
           <ListComponent postList={postList} />
         ) : (
-          <div className="w-full h-full flex justify-center items-center my-4">
+          <div className="flex items-center justify-center w-full h-full my-4">
             <PlaceholderComp />
           </div>
         ))}
