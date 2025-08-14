@@ -16,18 +16,18 @@ async function proxyRequest(req: NextRequest) {
     headers.delete('content-length');
 
     let body: any = undefined;
-
     if (method !== 'GET' && method !== 'HEAD') {
       if (isFile) {
         body = await req.formData();
-        headers.delete('content-type'); // FormData 사용 시 수동 설정 금지
+        headers.delete('content-type');
       } else if (isJson) {
         const json = await req.json();
         body = JSON.stringify(json);
-        headers.set('content-type', 'application/json'); // 명시적 설정
+        headers.set('content-type', 'application/json');
       }
     }
 
+    // 백엔드로 요청
     const response = await fetch(apiUrl, {
       method,
       headers,
@@ -35,28 +35,22 @@ async function proxyRequest(req: NextRequest) {
       body,
     });
 
-    const responseText = await response.text();
-    const responseData = responseText ? JSON.parse(responseText) : null;
-
-    // 상태 코드 204일 경우
-    if (response.status === 204) {
-      const proxyResponse = new NextResponse(null, { status: 204 });
-      const setCookie = response.headers.get('set-cookie');
-      if (setCookie) {
-        proxyResponse.headers.set('set-cookie', setCookie);
-      }
-      return proxyResponse;
-    } else {
-      const proxyResponse = NextResponse.json(responseData, { status: response.status });
-      const setCookie = response.headers.get('set-cookie');
-      if (setCookie) {
-        proxyResponse.headers.set('set-cookie', setCookie);
-      }
-      return proxyResponse;
+    // 쿠키 전달 처리
+    const proxyHeaders = new Headers(response.headers);
+    const setCookie = response.headers.get('set-cookie');
+    if (setCookie) {
+      proxyHeaders.set('set-cookie', setCookie);
     }
+
+    // 원본 body 그대로 복사
+    const rawBody = await response.arrayBuffer();
+    return new NextResponse(rawBody, {
+      status: response.status,
+      headers: proxyHeaders,
+    });
   } catch (error) {
     console.error('프록시 처리 에러:', error);
-    return NextResponse.json({ error: error }, { status: 500 });
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
 

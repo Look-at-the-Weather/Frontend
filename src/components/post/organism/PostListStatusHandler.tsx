@@ -19,7 +19,6 @@ export default function PostListStatusHandler({
 
   const ListComponent = isHorizontal ? HorizonScrollPostList : VirtualPostGrid;
 
-  console.log('isError: ', isError);
   return (
     <>
       {isSuccess &&
